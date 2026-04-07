@@ -1,0 +1,45 @@
+@model IEnumerable<DAL.Models.Appointment>
+@using DAL.Models
+
+<h2>Search Appointments</h2>
+
+<form asp-action="Search" method="post">
+
+    <input type="text" name="searchTerm" placeholder="Name or Email" />
+
+    <input type="date" name="date" />
+
+    <select name="status" asp-items="ViewBag.StatusList">
+        <option value="">All Status</option>
+    </select>
+
+    <button type="submit">Search</button>
+</form>
+
+<hr />
+
+@if (Model != null && Model.Any())
+{
+    <table class="table">
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Date</th>
+            <th>Status</th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td>@item.Email</td>
+                <td>@item.Date</td>
+                <td>@item.Status</td>
+            </tr>
+        }
+    </table>
+}
+else if (Model != null)
+{
+    <p>No results found</p>
+}

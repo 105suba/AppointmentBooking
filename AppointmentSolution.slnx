@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="DAL/DAL.csproj" />
+  <Project Path="MVC/MVC.csproj" />
+</Solution>
