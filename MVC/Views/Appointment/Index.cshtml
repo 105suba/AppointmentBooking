@@ -15,17 +15,17 @@
 
 @if (Context.Session.GetString("Role") == "Admin")
 {
-    <a asp-action="Search" class="btn btn-primary">Search Appointments</a>
+    <a asp-action="Search" class="btn btn-primary mb-2">Search Appointments</a>
 }
 
-<table class="table">
-    <thead>
+<table class="table table-bordered table-striped">
+    <thead class="table-dark">
         <tr>
             <th>Name</th>
             <th>Email</th>
             <th>Date</th>
             <th>Status</th>
-            <th>Actions</th>
+            <th style="width:250px;">Actions</th>
         </tr>
     </thead>
 
@@ -35,34 +35,68 @@
         <tr>
             <td>@item.Name</td>
             <td>@item.Email</td>
-            <td>@item.Date</td>
-            <td>@item.Status</td>
+            <td>@item.Date.ToString("g")</td>
+
+            <!-- STATUS COLOR -->
+            <td>
+                @if (item.Status == AppointmentStatus.Pending)
+                {
+                    <span class="badge bg-warning text-dark">Pending</span>
+                }
+                else if (item.Status == AppointmentStatus.Approved)
+                {
+                    <span class="badge bg-success">Approved</span>
+                }
+                else
+                {
+                    <span class="badge bg-danger">Rejected</span>
+                }
+            </td>
 
             <td>
+
+                <!-- USER ACTIONS -->
                 @if (Context.Session.GetString("Role") == "User")
                 {
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a><br />
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a><br />
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary">Edit</a>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Details</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
                 }
 
+                <!-- ADMIN ACTIONS -->
                 @if (Context.Session.GetString("Role") == "Admin")
                 {
-                    if (item.Status != AppointmentStatus.Approved)
-                    {
-                        <a asp-action="UpdateStatus" asp-route-id="@item.Id" asp-route-status="Approved">Approve</a><br />
-                    }
+                    <!-- APPROVE -->
+                    <form asp-action="UpdateStatus" method="post" style="display:inline;">
+                        <input type="hidden" name="id" value="@item.Id" />
+                        <input type="hidden" name="status" value="Approved" />
+                        <button type="submit"
+                                class="btn btn-sm @(item.Status == AppointmentStatus.Approved ? "btn-success" : "btn-outline-success")">
+                            Approve
+                        </button>
+                    </form>
 
-                    if (item.Status != AppointmentStatus.Rejected)
-                    {
-                        <a asp-action="UpdateStatus" asp-route-id="@item.Id" asp-route-status="Rejected">Reject</a><br />
-                    }
+                    <!-- REJECT -->
+                    <form asp-action="UpdateStatus" method="post" style="display:inline;">
+                        <input type="hidden" name="id" value="@item.Id" />
+                        <input type="hidden" name="status" value="Rejected" />
+                        <button type="submit"
+                                class="btn btn-sm @(item.Status == AppointmentStatus.Rejected ? "btn-danger" : "btn-outline-danger")">
+                            Reject
+                        </button>
+                    </form>
 
-                    if (item.Status != AppointmentStatus.Pending)
-                    {
-                        <a asp-action="UpdateStatus" asp-route-id="@item.Id" asp-route-status="Pending">Pending</a>
-                    }
+                    <!-- PENDING -->
+                    <form asp-action="UpdateStatus" method="post" style="display:inline;">
+                        <input type="hidden" name="id" value="@item.Id" />
+                        <input type="hidden" name="status" value="Pending" />
+                        <button type="submit"
+                                class="btn btn-sm @(item.Status == AppointmentStatus.Pending ? "btn-warning" : "btn-outline-warning")">
+                            Pending
+                        </button>
+                    </form>
                 }
+
             </td>
         </tr>
 }

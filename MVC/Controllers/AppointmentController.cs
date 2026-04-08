@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using DAL.Models;
 using DAL.Repository;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using MVC.Filters;
 namespace MVC.Controllers
 {
     public class AppointmentController : Controller
@@ -128,6 +129,10 @@ public IActionResult Edit(Appointment appt)
 {
     var existing = _repo.GetById(appt.Id);
 
+    if (existing == null)
+        return NotFound();
+
+    //  Slot validation (only if date changed)
     if (existing.Date != appt.Date && _repo.IsSlotBooked(appt.Date))
     {
         ModelState.AddModelError("Date", "This time slot is already booked");
@@ -135,7 +140,12 @@ public IActionResult Edit(Appointment appt)
 
     if (ModelState.IsValid)
     {
+        //  Preserve important fields
+        appt.UserEmail = existing.UserEmail;
+        appt.Status = existing.Status;
+
         _repo.Update(appt);
+
         return RedirectToAction("Index");
     }
 
@@ -146,5 +156,19 @@ public IActionResult Edit(Appointment appt)
             _repo.Delete(id);
             return RedirectToAction("Index");
         }
+[HttpPost]
+[AdminAuthorize]
+public IActionResult UpdateStatus(int id, AppointmentStatus status)
+{
+    var appt = _repo.GetById(id);
+
+    if (appt == null)
+        return NotFound();
+
+    appt.Status = status;
+    _repo.Update(appt);
+
+    return RedirectToAction("Index");
+}
     }
 }

@@ -1,47 +1,52 @@
 @model DAL.Models.Appointment
+@using Microsoft.AspNetCore.Http
+
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create Appointment";
 }
 
-<h1>Create</h1>
+<h2 class="mb-3">Create Appointment</h2>
 
-<h4>Appointment</h4>
 <hr />
+
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-5">
+
         <form asp-action="Create">
+
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
+
+            <!-- NAME -->
+            <div class="form-group mb-3">
+                <label asp-for="Name" class="form-label"></label>
+                <input asp-for="Name" class="form-control" placeholder="Enter your name" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" />
+
+            <!-- EMAIL (Auto-filled) -->
+            <div class="form-group mb-3">
+                <label asp-for="Email" class="form-label"></label>
+                <input asp-for="Email" class="form-control"
+                       value="@Context.Session.GetString("Email")" readonly />
                 <span asp-validation-for="Email" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Date" class="control-label"></label>
-                <input asp-for="Date" class="form-control" />
+
+            <!-- DATE -->
+            <div class="form-group mb-3">
+                <label asp-for="Date" class="form-label"></label>
+                <input asp-for="Date" type="datetime-local" class="form-control" />
                 <span asp-validation-for="Date" class="text-danger"></span>
             </div>
-           <!-- <div class="form-group">
-    <label asp-for="Status" class="control-label"></label>
-    <select asp-for="Status" class="form-control" asp-items="ViewBag.StatusList">
-</select>
 
-    <span asp-validation-for="Status" class="text-danger"></span>
-</div> -->
+            <!-- SUBMIT -->
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <button type="submit" class="btn btn-success">Create Appointment</button>
+                <a asp-action="Index" class="btn btn-secondary">Back</a>
             </div>
-        </form>
-    </div>
-</div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+        </form>
+
+    </div>
 </div>
 
 @section Scripts {
