@@ -13,7 +13,19 @@ namespace MVC.Controllers
             _repo = repo;
         }
 
-        public IActionResult Index() => View(_repo.GetAll());
+        public IActionResult Index(){
+            var role = HttpContext.Session.GetString("Role");
+    var email = HttpContext.Session.GetString("Email");
+
+    var data = _repo.GetAll();
+
+    if (role == "User")
+    {
+        data = data.Where(a => a.UserEmail == email).ToList();
+    }
+
+    return View(data);
+    }
         public IActionResult Search()
 {
     ViewBag.StatusList = Enum.GetValues(typeof(AppointmentStatus))
@@ -54,8 +66,13 @@ public IActionResult Search(string searchTerm, DateTime? date, AppointmentStatus
     return View();
         }
     [HttpPost]
+
 public IActionResult Create(Appointment appt)
 {
+    //  assign BEFORE validation
+    appt.UserEmail = HttpContext.Session.GetString("Email");
+    appt.Status = AppointmentStatus.Pending;
+
     if (_repo.IsSlotBooked(appt.Date))
     {
         ModelState.AddModelError("Date", "This time slot is already booked");
@@ -67,18 +84,8 @@ public IActionResult Create(Appointment appt)
         return RedirectToAction("Index");
     }
 
-    // Refill dropdown
-    ViewBag.StatusList = Enum.GetValues(typeof(AppointmentStatus))
-        .Cast<AppointmentStatus>()
-        .Select(e => new SelectListItem
-        {
-            Value = e.ToString(),
-            Text = e.ToString()
-        });
-
     return View(appt);
 }
-
 //         [HttpPost]
 // public IActionResult Create(Appointment appt)
 // {

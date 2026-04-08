@@ -1,52 +1,68 @@
 @model IEnumerable<DAL.Models.Appointment>
+@using Microsoft.AspNetCore.Http
+@using DAL.Models
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+@if (Context.Session.GetString("Role") == "User")
+{
+    <p>
+        <a asp-action="Create" class="btn btn-success">Create New</a>
+    </p>
+}
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<a asp-action="Search" class="btn btn-primary">Search Appointments</a>
+@if (Context.Session.GetString("Role") == "Admin")
+{
+    <a asp-action="Search" class="btn btn-primary">Search Appointments</a>
+}
+
 <table class="table">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Email)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Date)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Status)
-            </th>
-            <th></th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Actions</th>
         </tr>
     </thead>
+
     <tbody>
-@foreach (var item in Model) {
+@foreach (var item in Model)
+{
         <tr>
+            <td>@item.Name</td>
+            <td>@item.Email</td>
+            <td>@item.Date</td>
+            <td>@item.Status</td>
+
             <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Date)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                @if (Context.Session.GetString("Role") == "User")
+                {
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a><br />
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a><br />
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                }
+
+                @if (Context.Session.GetString("Role") == "Admin")
+                {
+                    if (item.Status != AppointmentStatus.Approved)
+                    {
+                        <a asp-action="UpdateStatus" asp-route-id="@item.Id" asp-route-status="Approved">Approve</a><br />
+                    }
+
+                    if (item.Status != AppointmentStatus.Rejected)
+                    {
+                        <a asp-action="UpdateStatus" asp-route-id="@item.Id" asp-route-status="Rejected">Reject</a><br />
+                    }
+
+                    if (item.Status != AppointmentStatus.Pending)
+                    {
+                        <a asp-action="UpdateStatus" asp-route-id="@item.Id" asp-route-status="Pending">Pending</a>
+                    }
+                }
             </td>
         </tr>
 }

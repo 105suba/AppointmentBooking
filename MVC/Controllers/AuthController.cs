@@ -21,28 +21,28 @@ namespace MVC.Controllers
             return View();
         }
 
-        [HttpPost]
-        public IActionResult Signup(Admin user)
-        {
-            if (ModelState.IsValid)
-            {
-                // 🔥 Decide role BEFORE hashing
-                if (user.Password == "adminsuba110")
-                    user.Role = "Admin";
-                else
-                    user.Role = "User";
+       [HttpPost]
+public IActionResult Signup(Admin user)
+{
+    if (ModelState.IsValid)
+    {
+        // Decide role BEFORE hashing
+        if (user.Password == "adminsuba110")
+            user.Role = "Admin";
+        else
+            user.Role = "User";
 
-                // 🔐 Hash password
-                user.Password = user.Password;
+        //  FIX: Hash password
+        user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
 
-                _context.Admins.Add(user);
-                _context.SaveChanges();
+        _context.Admins.Add(user);
+        _context.SaveChanges();
 
-                return RedirectToAction("Login");
-            }
+        return RedirectToAction("Login");
+    }
 
-            return View(user);
-        }
+    return View(user);
+}
 
         // ================= LOGIN =================
 
