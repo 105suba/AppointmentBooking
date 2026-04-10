@@ -42,16 +42,18 @@ namespace MVC.Controllers
 [HttpPost]
 public IActionResult Search(string searchTerm, DateTime? date, AppointmentStatus? status)
 {
+    return RedirectToAction("SearchResults", new
+    {
+        searchTerm,
+        date,
+        status
+    });
+}
+
+// RESULTS PAGE
+public IActionResult SearchResults(string searchTerm, DateTime? date, AppointmentStatus? status)
+{
     var results = _repo.Search(searchTerm, date, status);
-
-    ViewBag.StatusList = Enum.GetValues(typeof(AppointmentStatus))
-        .Cast<AppointmentStatus>()
-        .Select(e => new SelectListItem
-        {
-            Value = e.ToString(),
-            Text = e.ToString()
-        });
-
     return View(results);
 }
 
@@ -132,7 +134,7 @@ public IActionResult Edit(Appointment appt)
     if (existing == null)
         return NotFound();
 
-    //  Slot validation (only if date changed)
+    
     if (existing.Date != appt.Date && _repo.IsSlotBooked(appt.Date))
     {
         ModelState.AddModelError("Date", "This time slot is already booked");
@@ -140,7 +142,7 @@ public IActionResult Edit(Appointment appt)
 
     if (ModelState.IsValid)
     {
-        //  Preserve important fields
+        
         appt.UserEmail = existing.UserEmail;
         appt.Status = existing.Status;
 
@@ -151,11 +153,17 @@ public IActionResult Edit(Appointment appt)
 
     return View(appt);
 }
-        public IActionResult Delete(int id)
-        {
-            _repo.Delete(id);
-            return RedirectToAction("Index");
-        }
+public IActionResult Delete(int id)
+{
+    var appt = _repo.GetById(id);
+    return View(appt); // confirmation page
+}
+        [HttpPost]
+public IActionResult DeleteConfirmed(int id)
+{
+    _repo.Delete(id);
+    return RedirectToAction("Index");
+}
 [HttpPost]
 [AdminAuthorize]
 public IActionResult UpdateStatus(int id, AppointmentStatus status)

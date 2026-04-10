@@ -2,51 +2,127 @@
 @using Microsoft.AspNetCore.Http
 
 @{
+    Layout = null;
     ViewData["Title"] = "Create Appointment";
 }
 
-<h2 class="mb-3">Create Appointment</h2>
+<style>
+    body {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: Arial, sans-serif;
+    }
 
-<hr />
+    .form-card {
+        background: white;
+        padding: 35px;
+        border-radius: 12px;
+        width: 420px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    }
 
-<div class="row">
-    <div class="col-md-5">
+    .form-title {
+        text-align: center;
+        margin-bottom: 25px;
+        font-weight: bold;
+        color: #333;
+    }
 
-        <form asp-action="Create">
+    .form-group {
+        margin-bottom: 18px;
+    }
 
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    .form-control {
+        width: 100%;
+        padding: 10px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+    }
 
-            <!-- NAME -->
-            <div class="form-group mb-3">
-                <label asp-for="Name" class="form-label"></label>
-                <input asp-for="Name" class="form-control" placeholder="Enter your name" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
+    /* 🔴 ERROR MESSAGE */
+    .text-danger {
+        color: red !important;
+        font-size: 14px;
+        font-weight: 500;
+    }
 
-            <!-- EMAIL (Auto-filled) -->
-            <div class="form-group mb-3">
-                <label asp-for="Email" class="form-label"></label>
-                <input asp-for="Email" class="form-control"
-                       value="@Context.Session.GetString("Email")" readonly />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
+    /* ✅ COMMON BUTTON STYLE */
+    .btn-common {
+        width: 100%;
+        padding: 10px;
+        border-radius: 6px;
+        font-weight: bold;
+        margin-top: 10px;
+        display: block;
+        text-align: center;
+        text-decoration: none;
+    }
 
-            <!-- DATE -->
-            <div class="form-group mb-3">
-                <label asp-for="Date" class="form-label"></label>
-                <input asp-for="Date" type="datetime-local" class="form-control" />
-                <span asp-validation-for="Date" class="text-danger"></span>
-            </div>
+    /* CREATE BUTTON */
+    .btn-submit {
+        background: #28a745;
+        color: white;
+        border: none;
+    }
 
-            <!-- SUBMIT -->
-            <div class="form-group">
-                <button type="submit" class="btn btn-success">Create Appointment</button>
-                <a asp-action="Index" class="btn btn-secondary">Back</a>
-            </div>
+    .btn-submit:hover {
+        background: #218838;
+    }
 
-        </form>
+    /* BACK BUTTON */
+    .btn-back-home {
+        background: #6c757d;
+        color: white;
+    }
 
-    </div>
+    .btn-back-home:hover {
+        background: #5a6268;
+    }
+</style>
+
+<div class="form-card">
+
+    <h3 class="form-title">Create Appointment</h3>
+
+    <form asp-action="Create">
+
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <!-- NAME -->
+        <div class="form-group">
+            <label asp-for="Name"></label>
+            <input asp-for="Name" class="form-control" placeholder="Enter your name" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <!-- EMAIL -->
+        <div class="form-group">
+            <label asp-for="Email"></label>
+           <input asp-for="Email" class="form-control" placeholder="Enter your email" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+
+        <!-- DATE -->
+        <div class="form-group">
+            <label asp-for="Date"></label>
+            <input asp-for="Date" type="datetime-local" class="form-control" />
+            <span asp-validation-for="Date" class="text-danger"></span>
+        </div>
+
+        <!-- BUTTONS -->
+        <button type="submit" class="btn-common btn-submit">
+            Create Appointment
+        </button>
+
+        <a asp-controller="Appointment" asp-action="Index" class="btn-common btn-back-home">
+            Back to Home
+        </a>
+
+    </form>
+
 </div>
 
 @section Scripts {

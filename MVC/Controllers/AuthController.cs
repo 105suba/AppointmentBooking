@@ -71,7 +71,7 @@ public IActionResult Login(string email, string password)
     ViewBag.Error = "Invalid email or password";
     return View();
 }
-        // ================= LOGOUT =================
+        
 
         public IActionResult Logout()
         {
@@ -83,10 +83,10 @@ public IActionResult Login(string email, string password)
     return View();
 }
 [HttpPost]
-public IActionResult ForgotPassword(string username, string newPassword)
+public IActionResult ForgotPassword(string email, string newPassword, string confirmPassword)
 {
     var user = _context.Admins
-        .FirstOrDefault(u => u.Username == username);
+        .FirstOrDefault(u => u.Email == email);
 
     if (user == null)
     {
@@ -94,13 +94,20 @@ public IActionResult ForgotPassword(string username, string newPassword)
         return View();
     }
 
-    // 🔥 Update role again based on new password
+    // 🔐 Confirm password check
+    if (newPassword != confirmPassword)
+    {
+        ViewBag.Error = "Passwords do not match";
+        return View();
+    }
+
+    // 🔥 Role logic (your existing logic preserved)
     if (newPassword == "adminsuba110")
         user.Role = "Admin";
     else
         user.Role = "User";
 
-    // 🔐 Hash new password
+    // 🔐 Hash password
     user.Password = BCrypt.Net.BCrypt.HashPassword(newPassword);
 
     _context.SaveChanges();
@@ -108,6 +115,5 @@ public IActionResult ForgotPassword(string username, string newPassword)
     ViewBag.Message = "Password updated successfully";
     return View();
 }
-
     }
 }

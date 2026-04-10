@@ -1,16 +1,93 @@
-<h2>Login</h2>
+@{
+    Layout = null;
+}
 
-<form method="post">
+@{
+    ViewData["Title"] = "Login";
+}
 
-    <input type="email" name="email" placeholder="Email" />
+<style>
+    body {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: Arial, sans-serif;
+    }
 
-    <input type="password" name="password" placeholder="Password" />
+    .login-card {
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        width: 350px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        text-align: center;
+    }
 
-    <button type="submit">Login</button>
+    .login-card h2 {
+        margin-bottom: 20px;
+        color: #333;
+    }
 
-</form>
+    .form-control {
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+    }
 
-<p style="color:red">@ViewBag.Error</p>
+    .btn-login {
+        width: 100%;
+        padding: 10px;
+        background: #667eea;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-weight: bold;
+        cursor: pointer;
+    }
 
-<a asp-action="Signup">Create Account</a>
-<a asp-action="ForgotPassword">Forgot Password?</a>
+    .btn-login:hover {
+        background: #5a67d8;
+    }
+
+    .links {
+        margin-top: 15px;
+        display: flex;
+        justify-content: space-between;
+        font-size: 14px;
+    }
+
+    .links a {
+        text-decoration: none;
+        color: #667eea;
+    }
+
+    .error {
+        color: red;
+        margin-top: 10px;
+    }
+</style>
+
+<div class="login-card">
+    <h2>Login</h2>
+
+    <form method="post" autocomplete="off">
+
+        <input type="email" name="email" placeholder="Enter Email" class="form-control" required />
+
+        <input type="password" name="password" placeholder="Enter Password" class="form-control" required />
+
+        <button type="submit" class="btn-login">Login</button>
+
+    </form>
+
+    <p class="error">@ViewBag.Error</p>
+
+    <div class="links">
+        <a asp-action="Signup">Create Account</a>
+        <a asp-action="ForgotPassword">Forgot?</a>
+    </div>
+</div>
